@@ -4,8 +4,11 @@ import sympy
 ask = ""
 A = []
 B = []
-while ask != "1" and ask != "2":
-    ask = input("1)Doo-Little\n2)Crout\nChoose: ")
+k = 0
+g = 0
+LU = []
+while ask != "1" and ask != "2" and ask != "3":
+    ask = input("1)Doo-Little\n2)Crout\n3)Cholesky\nChoose: ")
 n = int(input("number of equations : "))
 
 
@@ -29,8 +32,72 @@ def printer_1dimension(any1_list):
     print()
 
 
-def equation_solver(unkonw):
-    pass
+def equation_solver(equation):
+    k, start, end = 0, 0, 0
+    number, temp, temp2 = [], [], []
+    equation = list(equation)
+    eq = equation[equation.index("=")::-1][::-1]
+    output = equation[equation.index("=") + 1::]
+    for i in range(len(eq)):
+        temp.append(eq[i])
+        if (eq[i + 1] == "+" or eq[i + 1] == "-" or eq[i - 1] == "+" or eq[i - 1] == "-") and (
+                eq[i + 1] != "*" and eq[i - 1] != "*"):  # 3*x + 2 =
+            # if all(item.isdigit() for item in temp):
+            #     number = temp
+            #     end = len(temp)
+            #     break
+            if eq[i - 1] == "-":
+                number.append("-")
+                k = 1
+            j = i
+            while eq[j] != "=" and eq[j] != "+" and eq[j] != "-" and eq[j] != "*":
+                number.append(eq[j])
+                j += 1
+            start = i - k
+            end = j
+            break
+        # else:
+        #     for d in eq:
+        #         if d.isdigit() or d == "+" or d == "-":
+        #             temp2.append(d)
+        #     if temp2[len(temp2) - 1] == "+" or temp2[len(temp2) - 1] == "-":
+        #         temp2.pop()
+        #     temp2 = "".join(temp2)
+        #     output = "".join(output)
+        #     return eval(output) / eval(temp2)
+    if number[0] != "+" and number[0] != "-":
+        output.append("-")
+        for m in range(start, end):
+            output.append(eq[m])
+        for p in range(len(number)):
+            eq.pop(start)
+        if eq[0] == "*":
+            eq.pop(0)
+    elif number[0] == '-':
+        output.append("+")
+        for m in range(start + 1, end):
+            output.append(eq[m])
+        for p in range(len(number)):
+            eq.pop(start)
+        if eq[0] == "*":
+            eq.pop(0)
+    elif number[0] == '+':
+        output.append("-")
+        for m in range(start, end):
+            output.append(eq[m])
+        for p in range(len(number)):
+            eq.pop(start)
+        if eq[0] == "*":
+            eq.pop(0)
+    for d in eq:
+        if d.isdigit() or d == "+" or d == "-":
+            temp2.append(d)
+    if temp2[len(temp2) - 1] == "+" or temp2[len(temp2) - 1] == "-":
+        temp2.pop()
+
+    output = eval("".join(output))
+    temp2 = eval("".join(temp2))
+    return output / temp2
 
 
 # making the matrix
@@ -66,7 +133,8 @@ if ask == "1":
         L.append(L_lines)
     for j in range(n):  # Lower Part
         for i in range(j + 1, n):
-            L[i][j] = f"l{i + 1}{j + 1}"
+            L[i][j] = "abcdefghijklmnopqrstuvwxyz"[g]
+            g += 1
     print("L : ")
     printer_2dimensions(L, 6)
     # making U
@@ -78,27 +146,41 @@ if ask == "1":
 
     for i in range(n):  # upper part
         for j in range(i, n):
-            U[i][j] = f"u{i + 1}{j + 1}"
+            U[i][j] = "abcdefghijklmnopqrstuvwxyz"[g]
+            g += 1
     print("U : ")
     printer_2dimensions(U, 6)
 
-    LU1 = sympy.Matrix(L).multiply(sympy.Matrix(U))
 
-    LU = []
-    k = 0
-    for i in range(n):  # making LU1 into LU =  List inside Lists
-        l_lines = []
-        for j in range(n):
-            l_lines.append(LU1[k])
-            k += 1
-        LU.append(l_lines)
+    def update():
+        global LU
+        LU1 = sympy.Matrix(L).multiply(sympy.Matrix(U))
+        LU = []
+        k = 0
+        for i in range(n):  # making LU1 into LU =  List inside Lists
+            l_lines = []
+            for j in range(n):
+                l_lines.append(LU1[k])
+                k += 1
+            LU.append(l_lines)
+
+
+    update()
     print("L*U : ")
     printer_2dimensions(LU, 24)
-
     print("L*U = A :\n")
+
     for i in range(n):  # printing the equations
         for j in range(n):
             print(f"{LU[i][j]} = {A[i][j]}")
 
+    for i in range(n):
+        U[0][i] = A[0][i]
+    update()
+    printer_2dimensions(LU, 24)
+
 if ask == "2":
+    pass
+
+else:
     pass
