@@ -6,8 +6,7 @@ A = []
 B = []
 k = 0
 g = 0
-LU = []
-constant, constant2, constant3, constant4 = 0, 0, 0, 0
+LU, values = [], []
 
 while ask != "1" and ask != "2" and ask != "3":
     ask = input("1)Doo-Little\n2)Crout\n3)Cholesky\nChoose: ")
@@ -85,7 +84,7 @@ def equation_solver(equation):
             if eq[0] == "-":
                 temp4.append("-")
             for c in eq:
-                if is_number(c):
+                if is_number(c) or c == ".":
                     temp4.append(c)
             return eval(''.join(output)) / eval("".join(temp4))
 
@@ -123,9 +122,18 @@ def equation_solver(equation):
             eq.pop(start)
         if eq[0] == "*":
             eq.pop(0)
+
+    if len(eq) == 3:
+        return eval(''.join(output))
+    if len(eq) == 4 and eq[0] == "-":
+        return eval(f"-{''.join(output)}")
     for d in eq:
-        if d.isdigit() or d == "+" or d == "-" or d == ".":
+        if d.isdigit() or d == "+" or d == "-" or d == "." and eq[eq.index(d) + 1] != "=":
             temp2.append(d)
+
+    if len(temp2) == 2:
+        temp2.append(1)
+
     if temp2[len(temp2) - 1] == "+" or temp2[len(temp2) - 1] == "-":
         temp2.pop()
 
@@ -208,36 +216,29 @@ if ask == "1":
         for j in range(n):
             print(f"{LU[i][j]} = {A[i][j]}")
 
-    for i in range(n):
-        U[0][i] = A[0][i]
-    update()
-
-    for _ in range(n ** 2 - n):
-        for j in range(n):
-            for i in range(n):
-                if not is_number(U[i][j]):
-                    U[i][j] = equation_solver(f"{U[1 + constant][constant2]}={A[1 + constant][constant2]}")
-                    if constant == 3:
-                        constant2 += 1
-                        constant = 0
-                    update()
-
-            for i in range(1, n):
-                if not is_number(L[i][j]):
-                    L[i][j] = equation_solver(f"{L[1 + constant][constant2]}={A[1 + constant][constant2]}")
-                    if constant == 3:
-                        constant2 += 1
-                        constant = 0
-                    update()
-
+    for y in range(n):
+        for t in range(n):
+            if not is_number(L[y][t]):
+                values.append(str(L[y][t]) + " = " + str(
+                    Fraction(equation_solver(f"{LU[y][t]}={A[y][t]}")).limit_denominator(max_denominator=10000)))
+                L[y][t] = equation_solver(f"{LU[y][t]}={A[y][t]}")
+                update()
+        for r in range(n):
+            if not is_number(U[y][r]):
+                values.append(str(U[y][r]) + " = " + str(
+                    Fraction(equation_solver(f"{LU[y][r]}={A[y][r]}")).limit_denominator(max_denominator=10000)))
+                U[y][r] = equation_solver(f"{LU[y][r]}={A[y][r]}")
+                update()
         update()
+    print()
+
+    for f in range(n ** 2):
+        print(values[f])
 
     print("L : ")
     printer_2dimensions(L, 6)
     print("U : ")
     printer_2dimensions(U, 6)
-    print("L*U : ")
-    printer_2dimensions(LU, 6)
 
 if ask == "2":
     pass
