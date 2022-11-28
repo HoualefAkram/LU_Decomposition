@@ -1,4 +1,5 @@
 from fractions import Fraction
+
 import sympy
 
 ask = ""
@@ -19,7 +20,7 @@ def printer_2dimensions(any_list, lenght):
         for COLUMNS in range(n):
             try:
                 print(
-                    f"{str(Fraction(float(any_list[LINES][COLUMNS])).limit_denominator(max_denominator=10000)):{int(lenght)}}",
+                    f"{str(Fraction(float(any_list[LINES][COLUMNS])).limit_denominator(max_denominator=100000)):{int(lenght)}}",
                     end=' ')
             except (ValueError, TypeError):
                 print(f"{str(any_list[LINES][COLUMNS]):{int(lenght)}}", end=' ')
@@ -31,13 +32,16 @@ def is_number(num):
     try:
         float(num)
         return True
-    except ValueError:
+    except (ValueError, TypeError):
         return False
 
 
 def printer_1dimension(any1_list):
     for K in any1_list:
-        print(f"∣ {str(Fraction(K).limit_denominator(max_denominator=10000))} ∣")
+        try:
+            print(f"∣  {str(Fraction(K).limit_denominator(max_denominator=100000)):3} ∣")
+        except (ValueError, TypeError):
+            print(f"∣ {K} ∣")
     print()
 
 
@@ -127,6 +131,8 @@ def equation_solver(equation):
         return eval(''.join(output))
     if len(eq) == 4 and eq[0] == "-":
         return eval(f"-{''.join(output)}")
+    if len(eq) == 2:
+        return eval(''.join(output))
     for d in eq:
         if d.isdigit() or d == "+" or d == "-" or d == "." and eq[eq.index(d) + 1] != "=":
             temp2.append(d)
@@ -239,6 +245,56 @@ if ask == "1":
     printer_2dimensions(L, 6)
     print("U : ")
     printer_2dimensions(U, 6)
+    Y = []
+    for h in range(n):  # making Y
+        Y.append("abcdefghujklmnopqrstuvw"[h])
+    LY = []
+
+
+    def update2():
+        global LY
+        LY = []
+        LY1 = sympy.Matrix(L).multiply(sympy.Matrix(Y))
+        for y in range(n):
+            LY.append(LY1[y])
+
+
+    update2()
+    for l in range(n):  # finding Y
+        Y[l] = equation_solver(f"{LY[l]}={B[l]}")
+        update2()
+
+    print("Y : ")
+    printer_1dimension(Y)
+    X = []
+    for x in range(n):  # making X
+        X.append("xyzabcdefghujklmnopqrstuvw"[x])
+    UX = []
+
+
+    def update3():
+        global UX
+        UX = []
+        UX1 = sympy.Matrix(U).multiply(sympy.Matrix(X))
+        for v in range(n):
+            UX.append(UX1[v])
+
+
+    update3()
+    print('UX = Y :')
+    for j in range(n):  # UX = Y
+        print(f"{UX[j]} = {Y[j]}")
+
+    for x in range(n - 1, -1, -1):  # finding X
+        X[x] = equation_solver(f"{UX[x]} = {Y[x]}")
+        update3()
+    print("X : ")
+    printer_1dimension(X)
+    counter = 0
+    for answers in X:
+        print(
+            f'{"xyzabcdefghijklmnopqrstuvwxyz"[counter]} = {str(Fraction(answers).limit_denominator(max_denominator=100000))}')
+        counter += 1
 
 if ask == "2":
     pass
