@@ -10,11 +10,11 @@ g = 0
 LU, values = [], []
 
 while ask != "1" and ask != "2" and ask != "3":
-    ask = input("1)Doo-Little\n2)Crout\n3)Cholesky\nChoose: ")
+    ask = input("1)Doo-Little\n2)Crout\n3)Cholesky\nChoose: ")  # NOQA
 n = int(input("number of equations : "))
 
 
-def printer_2dimensions(any_list, lenght):
+def printer_2dimensions(any_list, lenght):  # NOQA
     for LINES in range(n):
         print("∣  ", end="")
         for COLUMNS in range(n):
@@ -46,12 +46,12 @@ def printer_1dimension(any1_list):
 
 
 def equation_solver(equation):
-    k, start, end = 0, 0, 0
+    k, start, end = 0, 0, 0  # NOQA
     number, temp, temp2, temp4 = [], [], [], []
     equation = list(equation)
     eq = equation[equation.index("=")::-1][::-1]
     output = equation[equation.index("=") + 1::]
-    for i in range(len(eq)):
+    for i in range(len(eq)):  # NOQA
         temp.append(eq[i])  # all values of the loop
         for b in eq:  # remove all spaces
             if b == " ":
@@ -59,7 +59,7 @@ def equation_solver(equation):
         if (eq[i + 1] == "+" or eq[i + 1] == "-" or eq[i - 1] == "+" or eq[i - 1] == "-") and (
                 eq[i + 1] != "*" and eq[i - 1] != "*") and is_number(eq[i]):  # the number with this conditions
             temp3 = []
-            j = i
+            j = i  # NOQA
             if all(item.isdigit() or item == "." for item in temp):  # specific problem
                 number = temp
                 end = len(temp)
@@ -72,8 +72,8 @@ def equation_solver(equation):
             if temp3[len(temp3) - 1] != "*":  # start adding
                 if eq[i - 1] == "-":
                     number.append("-")
-                    k = 1
-                h = i
+                    k = 1  # NOQA
+                h = i  # NOQA
                 while eq[h] != "=" and eq[h] != "+" and eq[h] != "-" and eq[h] != "*":
                     number.append(eq[h])
                     h += 1
@@ -157,8 +157,8 @@ for lines in range(n):
             v = float(equations[0: equations.index("x")])
         else:
             v = float(equations[
-                      equations.index("xyzabcdefghijklmnopqrstuvw"[columns - 1]) + 1: equations.index(
-                          "xyzabcdefghijklmnopqrstuvw"[columns])])
+                      equations.index("xyzabcdefghijklmnopqrstuvw"[columns - 1]) + 1: equations.index(  # NOQA
+                          "xyzabcdefghijklmnopqrstuvw"[columns])])  # NOQA
 
         lines_list.append(v)
     w = equations[equations.index("=") + 1::]
@@ -181,7 +181,7 @@ if ask == "1":
         L.append(L_lines)
     for j in range(n):  # Lower Part
         for i in range(j + 1, n):
-            L[i][j] = "abcdefghijklmnopqrstuvwxyz"[g]
+            L[i][j] = "abcdefghijklmnopqrstuvwxyz"[g]  # NOQA
             g += 1
     print("L : ")
     printer_2dimensions(L, 6)
@@ -194,7 +194,7 @@ if ask == "1":
 
     for i in range(n):  # upper part
         for j in range(i, n):
-            U[i][j] = "abcdefghijklmnopqrstuvwxyz"[g]
+            U[i][j] = "abcdefghijklmnopqrstuvwxyz"[g]  # NOQA
             g += 1
     print("U : ")
     printer_2dimensions(U, 6)
@@ -202,12 +202,12 @@ if ask == "1":
 
     def update():
         global LU
-        LU1 = sympy.Matrix(L).multiply(sympy.Matrix(U))
+        LU1 = sympy.Matrix(L).multiply(sympy.Matrix(U))  # NOQA
         LU = []
-        k = 0
-        for i in range(n):  # making LU1 into LU =  List inside Lists
+        k = 0  # NOQA
+        for i in range(n):  # NOQA  # making LU1 into LU =  List inside Lists
             l_lines = []
-            for j in range(n):
+            for j in range(n):  # NOQA
                 l_lines.append(LU1[k])
                 k += 1
             LU.append(l_lines)
@@ -247,20 +247,20 @@ if ask == "1":
     printer_2dimensions(U, 6)
     Y = []
     for h in range(n):  # making Y
-        Y.append("abcdefghujklmnopqrstuvw"[h])
+        Y.append("abcdefghujklmnopqrstuvw"[h])  # NOQA
     LY = []
 
 
     def update2():
         global LY
         LY = []
-        LY1 = sympy.Matrix(L).multiply(sympy.Matrix(Y))
-        for y in range(n):
+        LY1 = sympy.Matrix(L).multiply(sympy.Matrix(Y))  # NOQA
+        for y in range(n):  # NOQA
             LY.append(LY1[y])
 
 
     update2()
-    for l in range(n):  # finding Y
+    for l in range(n):  # NOQA  # finding Y
         Y[l] = equation_solver(f"{LY[l]}={B[l]}")
         update2()
 
@@ -268,15 +268,15 @@ if ask == "1":
     printer_1dimension(Y)
     X = []
     for x in range(n):  # making X
-        X.append("xyzabcdefghujklmnopqrstuvw"[x])
+        X.append("xyzabcdefghujklmnopqrstuvw"[x])  # NOQA
     UX = []
 
 
     def update3():
         global UX
         UX = []
-        UX1 = sympy.Matrix(U).multiply(sympy.Matrix(X))
-        for v in range(n):
+        UX1 = sympy.Matrix(U).multiply(sympy.Matrix(X))  # NOQA
+        for v in range(n):  # NOQA
             UX.append(UX1[v])
 
 
@@ -293,7 +293,7 @@ if ask == "1":
     counter = 0
     for answers in X:
         print(
-            f'{"xyzabcdefghijklmnopqrstuvwxyz"[counter]} = {str(Fraction(answers).limit_denominator(max_denominator=100000))}')
+            f'{"xyzabcdefghijklmnopqrstuvwxyz"[counter]} = {str(Fraction(answers).limit_denominator(max_denominator=100000))}')  # NOQA
         counter += 1
 
 if ask == "2":
