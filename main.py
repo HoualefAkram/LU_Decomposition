@@ -297,7 +297,134 @@ if ask == "1":
         counter += 1
 
 if ask == "2":
-    pass
+    L = []
+    U = []
+    # making L
+    for i in range(n):  # List with 0's
+        L_lines = []
+        for j in range(n):
+            L_lines.append(0)
+        L.append(L_lines)
 
-else:
+    for j in range(n):  # Lower Part
+        for i in range(0, j + 1):
+            L[j][i] = "abcdefghijklmnopqrstuvwxyz"[g]  # NOQA
+            g += 1
+    print("L : ")
+    printer_2dimensions(L, 6)
+    # making U
+    for i in range(n):  # making the identity
+        U_lines = []
+        for j in range(n):
+            if i == j:
+                U_lines.append(1)
+            else:
+                U_lines.append(0)
+        U.append(U_lines)
+    for j in range(n - 1):  # Upper Part
+        for i in range(j + 1, n):
+            U[j][i] = "abcdefghijklmnopqrstuvwxyz"[g]  # NOQA
+            g += 1
+
+    print("U : ")
+    printer_2dimensions(U, 6)
+
+
+    def update():
+        global LU
+        LU1 = sympy.Matrix(L).multiply(sympy.Matrix(U))  # NOQA
+        LU = []
+        k = 0  # NOQA
+        for i in range(n):  # NOQA  # making LU1 into LU =  List inside Lists
+            l_lines = []
+            for j in range(n):  # NOQA
+                l_lines.append(LU1[k])
+                k += 1
+            LU.append(l_lines)
+
+
+    update()
+    print("L*U : ")
+    printer_2dimensions(LU, 24)
+    print("L*U = A :\n")
+
+    for i in range(n):  # printing the equations
+        for j in range(n):
+            print(f"{LU[i][j]} = {A[i][j]}")
+
+    for y in range(n):
+        for t in range(n):
+            if not is_number(L[y][t]):
+                values.append(str(L[y][t]) + " = " + str(
+                    Fraction(equation_solver(f"{LU[y][t]}={A[y][t]}")).limit_denominator(max_denominator=10000)))
+                L[y][t] = equation_solver(f"{LU[y][t]}={A[y][t]}")
+                update()
+        for r in range(n):
+            if not is_number(U[y][r]):
+                values.append(str(U[y][r]) + " = " + str(
+                    Fraction(equation_solver(f"{LU[y][r]}={A[y][r]}")).limit_denominator(max_denominator=10000)))
+                U[y][r] = equation_solver(f"{LU[y][r]}={A[y][r]}")
+                update()
+        update()
+    print()
+
+    for f in range(n ** 2):
+        print(values[f])
+
+    print("L : ")
+    printer_2dimensions(L, 6)
+    print("U : ")
+    printer_2dimensions(U, 6)
+    Y = []
+    for h in range(n):  # making Y
+        Y.append("abcdefghujklmnopqrstuvw"[h])  # NOQA
+    LY = []
+
+
+    def update2():
+        global LY
+        LY = []
+        LY1 = sympy.Matrix(L).multiply(sympy.Matrix(Y))  # NOQA
+        for y in range(n):  # NOQA
+            LY.append(LY1[y])
+
+
+    update2()
+    for l in range(n):  # NOQA  # finding Y
+        Y[l] = equation_solver(f"{LY[l]}={B[l]}")
+        update2()
+
+    print("Y : ")
+    printer_1dimension(Y)
+    X = []
+    for x in range(n):  # making X
+        X.append("xyzabcdefghujklmnopqrstuvw"[x])  # NOQA
+    UX = []
+
+
+    def update3():
+        global UX
+        UX = []
+        UX1 = sympy.Matrix(U).multiply(sympy.Matrix(X))  # NOQA
+        for v in range(n):  # NOQA
+            UX.append(UX1[v])
+
+
+    update3()
+    print('UX = Y :')
+    for j in range(n):  # UX = Y
+        print(f"{UX[j]} = {Y[j]}")
+
+    for x in range(n - 1, -1, -1):  # finding X
+        X[x] = equation_solver(f"{UX[x]} = {Y[x]}")
+        update3()
+    print("X : ")
+    printer_1dimension(X)
+    counter = 0
+    for answers in X:
+        print(
+            f'{"xyzabcdefghijklmnopqrstuvwxyz"[counter]} = {str(Fraction(answers).limit_denominator(max_denominator=100000))}')  # NOQA
+        counter += 1
+
+if ask == "3":
     pass
