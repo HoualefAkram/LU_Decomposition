@@ -10,7 +10,7 @@ g = 0
 LU, values = [], []
 
 while ask != "1" and ask != "2" and ask != "3":
-    ask = input("1)Doo-Little\n2)Crout\n3)Cholesky\nChoose: ")  # NOQA
+    ask = input("1)DooLittle\n2)Crout\nChoose: ")  # NOQA
 n = int(input("number of equations : "))
 
 
@@ -425,6 +425,3 @@ if ask == "2":
         print(
             f'{"xyzabcdefghijklmnopqrstuvwxyz"[counter]} = {str(Fraction(answers).limit_denominator(max_denominator=100000))}')  # NOQA
         counter += 1
-
-if ask == "3":
-    pass
